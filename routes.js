@@ -1,6 +1,8 @@
 var express = require("express");
 var User = require("./models/user");
 var router = express.Router();
+//new require passport
+var passport = require("passport");
 
 router.use(function(req, res, next){
 	res.locals.currentUser = req.user;
@@ -15,5 +17,33 @@ router.get("/", function(req, res, next){
 		res.render("index", {users:users});
 	});
 });
+
+//routes to signup page
+router.get("/signup", function(req, res, next){
+	res.render("signup");
+});
+
+router.post("/signup", funtion(req, res, next){
+	var username = req.body.username;
+	var password = req.body.password;
+	
+	User.findOne({username: username}, function(err, user){
+		if(err) return next(err);
+		if(user){
+			req.flash("error", "User already exists");
+			return res.redirect("./signup");
+		}
+		
+		var newUser = new User({
+			username: username,
+			password:password,
+		});
+		newUser.save(next);
+	});
+	}, passport.authenticate("login", {
+		successRedirect: "/",
+		failureRedirect: "/signup",
+		failureFlash:true
+	}));
 
 module.exports = router;
