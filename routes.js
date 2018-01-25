@@ -23,7 +23,7 @@ router.get("/signup", function(req, res, next){
 	res.render("signup");
 });
 
-router.post("/signup", funtion(req, res, next){
+router.post("/signup", function(req, res, next){
 	var username = req.body.username;
 	var password = req.body.password;
 	
